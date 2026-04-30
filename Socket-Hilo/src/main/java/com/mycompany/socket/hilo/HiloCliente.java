@@ -31,9 +31,9 @@ public class HiloCliente extends Thread {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            // =========================================================
+            
             // FASE 1: REGISTRO OBLIGATORIO (HELLO)
-            // =========================================================
+          
             out.println("Servidor: Conectado. Por favor, identifícate usando el comando: HELLO \"TuNombre\"");
             
             boolean registrado = false;
@@ -56,9 +56,9 @@ public class HiloCliente extends Thread {
                 }
             }
 
-            // =========================================================
+            
             // FASE 2: BUCLE PRINCIPAL DE CHAT Y COMANDOS
-            // =========================================================
+    
             boolean done = false;
             
             while (!done) {
@@ -107,10 +107,9 @@ public class HiloCliente extends Thread {
                     }
                 }
             }
-            
-            // =========================================================
+        
             // FASE 3: LIMPIEZA AL DESCONECTARSE
-            // =========================================================
+    
             desconectarUsuario();
 
         } catch (IOException e) {

@@ -33,5 +33,66 @@ public class Servidor {
         }
     }
     
-   
+    // Método para evaluar strings matemáticos
+    public static double evaluarMatematica(final String str) {
+        return new Object() {
+            int pos = -1, ch;
+
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+
+            boolean eat(int charToEat) {
+                while (ch == ' ') nextChar();
+                if (ch == charToEat) {
+                    nextChar();
+                    return true;
+                }
+                return false;
+            }
+
+            double parse() {
+                nextChar();
+                double x = parseExpression();
+                if (pos < str.length()) throw new RuntimeException("Inesperado: " + (char)ch);
+                return x;
+            }
+
+            double parseExpression() {
+                double x = parseTerm();
+                for (;;) {
+                    if      (eat('+')) x += parseTerm(); // Suma
+                    else if (eat('-')) x -= parseTerm(); // Resta
+                    else return x;
+                }
+            }
+
+            double parseTerm() {
+                double x = parseFactor();
+                for (;;) {
+                    if      (eat('*')) x *= parseFactor(); // Multiplicación
+                    else if (eat('/')) x /= parseFactor(); // División
+                    else return x;
+                }
+            }
+
+            double parseFactor() {
+                if (eat('+')) return parseFactor(); // Unario más
+                if (eat('-')) return -parseFactor(); // Unario menos
+
+                double x;
+                int startPos = this.pos;
+                if (eat('(')) { // Paréntesis
+                    x = parseExpression();
+                    eat(')');
+                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // Números
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                } else {
+                    throw new RuntimeException("Carácter inesperado: " + (char)ch);
+                }
+                return x;
+            }
+        }.parse();
+    }
 }
